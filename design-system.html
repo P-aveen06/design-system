@@ -1,0 +1,1905 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Design System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* ============================================================
+       DEFAULT THEME TOKENS — single source of truth.
+       Every component reads from these. Controls panel rewrites them.
+       ============================================================ */
+    :root {
+      /* Color — neutrals (light mode) */
+      --color-bg:        #FBFAF8;
+      --color-surface:   #FFFFFF;
+      --color-sunken:    #F5F4F1;
+      --color-border:    #EDEBE7;
+      --color-border-strong: #D9D6CF;
+      --color-text:      #18181B;
+      --color-text-muted:#52525B;
+      --color-text-subtle:#9C9A93;
+
+      /* Color — accent */
+      --color-accent:        #3B5BDB;
+      --color-accent-hover:  #2F49B0;
+      --color-accent-soft:   #EEF2FF;
+      --color-accent-text:   #FFFFFF;
+
+      /* Color — semantic */
+      --color-success: #16A34A;
+      --color-warning: #D97706;
+      --color-danger:  #DC2626;
+      --color-info:    #0284C7;
+
+      /* Typography */
+      --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+      --font-size-base: 14px;
+      --type-ratio: 1.2;
+
+      --text-xs:   calc(var(--font-size-base) / var(--type-ratio));
+      --text-sm:   var(--font-size-base);
+      --text-md:   calc(var(--font-size-base) * var(--type-ratio));
+      --text-lg:   calc(var(--font-size-base) * var(--type-ratio) * var(--type-ratio));
+      --text-xl:   calc(var(--font-size-base) * var(--type-ratio) * var(--type-ratio) * var(--type-ratio));
+      --text-2xl:  calc(var(--font-size-base) * var(--type-ratio) * var(--type-ratio) * var(--type-ratio) * var(--type-ratio));
+      --text-3xl:  calc(var(--font-size-base) * var(--type-ratio) * var(--type-ratio) * var(--type-ratio) * var(--type-ratio) * var(--type-ratio));
+
+      --leading-tight: 1.2;
+      --leading-normal: 1.5;
+      --leading-relaxed: 1.7;
+
+      /* Spacing — 4px base, geometric */
+      --space-base: 4px;
+      --space-0: 0px;
+      --space-1: calc(var(--space-base) * 1);   /*  4px */
+      --space-2: calc(var(--space-base) * 2);   /*  8px */
+      --space-3: calc(var(--space-base) * 3);   /* 12px */
+      --space-4: calc(var(--space-base) * 4);   /* 16px */
+      --space-5: calc(var(--space-base) * 6);   /* 24px */
+      --space-6: calc(var(--space-base) * 8);   /* 32px */
+      --space-7: calc(var(--space-base) * 12);  /* 48px */
+      --space-8: calc(var(--space-base) * 16);  /* 64px */
+      --space-9: calc(var(--space-base) * 24);  /* 96px */
+
+      /* Radius */
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --radius-xl: 16px;
+      --radius-pill: 999px;
+
+      /* Borders */
+      --border-width: 1px;
+      --border: var(--border-width) solid var(--color-border);
+
+      /* Shadows — soft, low-contrast */
+      --shadow-xs: 0 1px 2px rgba(0,0,0,0.04);
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+      --shadow-md: 0 4px 8px rgba(0,0,0,0.06), 0 2px 4px rgba(0,0,0,0.04);
+      --shadow-lg: 0 12px 24px rgba(0,0,0,0.08), 0 4px 8px rgba(0,0,0,0.04);
+      --shadow-xl: 0 24px 48px rgba(0,0,0,0.10), 0 8px 16px rgba(0,0,0,0.04);
+
+      /* Density */
+      --density-y: var(--space-3);
+      --density-x: var(--space-4);
+
+      /* Motion */
+      --motion-fast: 120ms ease;
+      --motion-base: 200ms ease;
+
+      /* Layout */
+      --nav-width: 240px;
+      --drawer-width: 320px;
+      --topbar-height: 56px;
+    }
+
+    /* Dark theme override */
+    [data-theme="dark"] {
+      --color-bg:        #0C0A09;
+      --color-surface:   #1C1917;
+      --color-sunken:    #161311;
+      --color-border:    #292524;
+      --color-border-strong: #44403C;
+      --color-text:      #FAFAF9;
+      --color-text-muted:#A8A29E;
+      --color-text-subtle:#78716C;
+      --color-accent-soft:#1E2238;
+      --shadow-xs: 0 1px 2px rgba(0,0,0,0.4);
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.5);
+      --shadow-md: 0 4px 8px rgba(0,0,0,0.5);
+      --shadow-lg: 0 12px 24px rgba(0,0,0,0.6);
+      --shadow-xl: 0 24px 48px rgba(0,0,0,0.7);
+    }
+
+    /* ============================================================
+       RESET + BASE
+       ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: var(--font-sans);
+      font-size: var(--text-sm);
+      line-height: var(--leading-normal);
+      color: var(--color-text);
+      background: var(--color-bg);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      font-feature-settings: "cv11", "ss01";
+      letter-spacing: -0.003em;
+    }
+    h1, h2, h3, h4, h5, h6 { margin: 0; font-weight: 600; line-height: var(--leading-tight); letter-spacing: -0.022em; }
+    h1 { letter-spacing: -0.03em; }
+    p { margin: 0; }
+    a { color: var(--color-accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    code, pre { font-family: var(--font-mono); font-size: 0.92em; }
+    button { font-family: inherit; }
+
+    ::selection { background: var(--color-accent-soft); color: var(--color-text); }
+
+    /* ============================================================
+       APP SHELL
+       ============================================================ */
+    .app {
+      display: grid;
+      grid-template-columns: var(--nav-width) 1fr var(--drawer-width);
+      grid-template-rows: var(--topbar-height) 1fr;
+      grid-template-areas:
+        "topbar topbar topbar"
+        "sidebar canvas drawer";
+      min-height: 100vh;
+      transition: grid-template-columns var(--motion-base);
+    }
+    .app[data-drawer="closed"] { grid-template-columns: var(--nav-width) 1fr 0; }
+    .app[data-drawer="closed"] .drawer { transform: translateX(100%); pointer-events: none; }
+
+    /* Topbar */
+    .topbar {
+      grid-area: topbar;
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+      padding: 0 var(--space-5);
+      border-bottom: var(--border);
+      background: var(--color-surface);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .topbar__brand {
+      display: flex; align-items: center; gap: var(--space-2);
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+    .topbar__brand-mark {
+      width: 24px; height: 24px;
+      background: var(--color-text);
+      border-radius: var(--radius-sm);
+      display: grid; place-items: center;
+      color: var(--color-bg);
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .topbar__spacer { flex: 1; }
+    .topbar__status {
+      display: flex; align-items: center; gap: var(--space-2);
+      color: var(--color-text-muted);
+      font-size: var(--text-xs);
+    }
+    .dot {
+      width: 6px; height: 6px;
+      border-radius: var(--radius-pill);
+      background: var(--color-text-subtle);
+    }
+    .icon-btn {
+      width: 32px; height: 32px;
+      display: inline-grid; place-items: center;
+      border: var(--border);
+      background: var(--color-surface);
+      color: var(--color-text-muted);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: background var(--motion-fast), color var(--motion-fast), border-color var(--motion-fast);
+    }
+    .icon-btn:hover { background: var(--color-sunken); color: var(--color-text); border-color: var(--color-border-strong); }
+    .icon-btn:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+    .icon-btn .icon-moon { display: none; }
+    [data-theme="dark"] .icon-btn .icon-sun { display: none; }
+    [data-theme="dark"] .icon-btn .icon-moon { display: block; }
+    .dot--unsaved { background: var(--color-warning); animation: pulse 1.6s ease-in-out infinite; }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* Sidebar */
+    .sidebar {
+      grid-area: sidebar;
+      border-right: var(--border);
+      background: var(--color-surface);
+      padding: var(--space-5) var(--space-3);
+      overflow-y: auto;
+      position: sticky;
+      top: var(--topbar-height);
+      height: calc(100vh - var(--topbar-height));
+    }
+    .sidebar__group { margin-bottom: var(--space-5); }
+    .sidebar__label {
+      font-size: var(--text-xs);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--color-text-subtle);
+      padding: 0 var(--space-3) var(--space-2);
+    }
+    .sidebar__link {
+      display: block;
+      padding: var(--space-2) var(--space-3);
+      border-radius: var(--radius-sm);
+      color: var(--color-text-muted);
+      font-weight: 500;
+      transition: color var(--motion-fast), background var(--motion-fast);
+    }
+    .sidebar__link:hover {
+      color: var(--color-text);
+      background: var(--color-sunken);
+      text-decoration: none;
+    }
+    .sidebar__link.is-active {
+      color: var(--color-text);
+      background: var(--color-sunken);
+    }
+
+    /* Canvas */
+    .canvas {
+      grid-area: canvas;
+      padding: var(--space-7) var(--space-7);
+      max-width: 980px;
+      width: 100%;
+    }
+    .section { margin-bottom: var(--space-9); scroll-margin-top: calc(var(--topbar-height) + var(--space-4)); }
+    .section__eyebrow {
+      font-size: var(--text-xs);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--color-text-subtle);
+      margin-bottom: var(--space-2);
+    }
+    .section__title {
+      font-size: var(--text-2xl);
+      margin-bottom: var(--space-2);
+    }
+    .section__lede {
+      color: var(--color-text-muted);
+      font-size: var(--text-md);
+      margin-bottom: var(--space-6);
+      max-width: 60ch;
+    }
+    .subsection { margin-bottom: var(--space-7); }
+    .subsection__title {
+      font-size: var(--text-lg);
+      margin-bottom: var(--space-4);
+      padding-bottom: var(--space-2);
+      border-bottom: var(--border);
+    }
+
+    /* Drawer */
+    .drawer {
+      grid-area: drawer;
+      border-left: var(--border);
+      background: var(--color-surface);
+      padding: var(--space-5);
+      overflow-y: auto;
+      position: sticky;
+      top: var(--topbar-height);
+      height: calc(100vh - var(--topbar-height));
+      transition: transform var(--motion-base);
+    }
+    .drawer__header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: var(--space-1);
+    }
+    .drawer__title {
+      font-size: var(--text-md);
+    }
+    .drawer__collapse svg { transition: transform var(--motion-fast); }
+
+    /* Floating "open controls" tab — appears when drawer is collapsed */
+    .drawer-reopen {
+      position: fixed;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 28px; height: 64px;
+      border: var(--border);
+      border-right: 0;
+      border-radius: var(--radius-md) 0 0 var(--radius-md);
+      background: var(--color-surface);
+      color: var(--color-text-muted);
+      cursor: pointer;
+      display: none;
+      align-items: center; justify-content: center;
+      box-shadow: var(--shadow-sm);
+      z-index: 40;
+      transition: color var(--motion-fast), background var(--motion-fast);
+    }
+    .drawer-reopen:hover { color: var(--color-text); background: var(--color-sunken); }
+    .app[data-drawer="closed"] .drawer-reopen { display: flex; }
+    .drawer__hint {
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+      margin-bottom: var(--space-5);
+    }
+    .field { margin-bottom: var(--space-4); }
+    .field__label {
+      display: flex;
+      justify-content: space-between;
+      font-size: var(--text-xs);
+      font-weight: 500;
+      color: var(--color-text-muted);
+      margin-bottom: var(--space-2);
+    }
+    .field__value { color: var(--color-text); font-variant-numeric: tabular-nums; }
+    .field__row {
+      display: flex; gap: var(--space-2);
+    }
+
+    /* ============================================================
+       PRIMITIVES — buttons, inputs, etc (minimal for skeleton)
+       ============================================================ */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2);
+      padding: var(--space-2) var(--space-4);
+      border-radius: var(--radius-md);
+      border: var(--border);
+      background: var(--color-surface);
+      color: var(--color-text);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      cursor: pointer;
+      transition: background var(--motion-fast), border-color var(--motion-fast), color var(--motion-fast);
+    }
+    .btn:hover { background: var(--color-sunken); border-color: var(--color-border-strong); }
+    .btn:active { transform: translateY(0.5px); }
+    .btn:focus-visible {
+      outline: 2px solid var(--color-accent);
+      outline-offset: 2px;
+    }
+    .btn--primary {
+      background: var(--color-accent);
+      color: var(--color-accent-text);
+      border-color: var(--color-accent);
+    }
+    .btn--primary:hover { background: var(--color-accent-hover); border-color: var(--color-accent-hover); }
+    .btn--ghost { border-color: transparent; background: transparent; }
+    .btn--ghost:hover { background: var(--color-sunken); border-color: transparent; }
+    .btn--sm { padding: var(--space-1) var(--space-3); font-size: var(--text-xs); }
+    .btn--icon { padding: var(--space-2); }
+
+    .select, .input {
+      width: 100%;
+      padding: var(--space-2) var(--space-3);
+      border: var(--border);
+      border-radius: var(--radius-md);
+      background: var(--color-surface);
+      color: var(--color-text);
+      font-family: inherit;
+      font-size: var(--text-sm);
+      transition: border-color var(--motion-fast), box-shadow var(--motion-fast);
+    }
+    .select:focus, .input:focus {
+      outline: none;
+      border-color: var(--color-accent);
+      box-shadow: 0 0 0 3px var(--color-accent-soft);
+    }
+
+    /* Segmented control */
+    .segmented {
+      display: inline-flex;
+      width: 100%;
+      padding: 2px;
+      background: var(--color-sunken);
+      border-radius: var(--radius-md);
+      gap: 2px;
+    }
+    .segmented__btn {
+      flex: 1;
+      padding: var(--space-1) var(--space-2);
+      border: 0;
+      background: transparent;
+      color: var(--color-text-muted);
+      font-size: var(--text-xs);
+      font-weight: 500;
+      border-radius: calc(var(--radius-md) - 2px);
+      cursor: pointer;
+      transition: background var(--motion-fast), color var(--motion-fast);
+    }
+    .segmented__btn:hover { color: var(--color-text); }
+    .segmented__btn.is-active {
+      background: var(--color-surface);
+      color: var(--color-text);
+      box-shadow: var(--shadow-xs);
+    }
+
+    /* Counter — stepper control */
+    .counter {
+      display: inline-flex;
+      align-items: stretch;
+      border: var(--border);
+      border-radius: var(--radius-md);
+      background: var(--color-surface);
+      overflow: hidden;
+      height: 32px;
+    }
+    .counter__btn {
+      width: 32px;
+      border: 0;
+      background: transparent;
+      color: var(--color-text-muted);
+      font-size: var(--text-md);
+      font-weight: 500;
+      cursor: pointer;
+      display: grid; place-items: center;
+      transition: background var(--motion-fast), color var(--motion-fast);
+    }
+    .counter__btn:hover { background: var(--color-sunken); color: var(--color-text); }
+    .counter__btn:disabled { color: var(--color-text-subtle); cursor: not-allowed; }
+    .counter__btn:disabled:hover { background: transparent; }
+    .counter__value {
+      min-width: 64px;
+      display: grid; place-items: center;
+      padding: 0 var(--space-2);
+      font-size: var(--text-sm);
+      font-variant-numeric: tabular-nums;
+      color: var(--color-text);
+      border-left: var(--border);
+      border-right: var(--border);
+      user-select: none;
+    }
+    .field--row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3);
+    }
+    .field--row .field__label { margin-bottom: 0; }
+
+    /* Native color picker trigger — rainbow wheel signals "pick any color" */
+    .color-trigger {
+      position: relative;
+      width: 36px; height: 36px;
+      border-radius: var(--radius-md);
+      border: var(--border);
+      background: var(--color-surface);
+      overflow: hidden;
+      cursor: pointer;
+      flex-shrink: 0;
+      display: inline-grid;
+      place-items: center;
+      transition: transform var(--motion-fast), box-shadow var(--motion-fast);
+    }
+    .color-trigger:hover { transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+    .color-trigger__swatch {
+      width: 22px; height: 22px;
+      border-radius: var(--radius-pill);
+      background:
+        radial-gradient(circle at center, #FFFFFF 0%, transparent 40%),
+        conic-gradient(
+          from 0deg,
+          #FF1744, #FF9100, #FFEA00, #00E676,
+          #00B0FF, #2979FF, #D500F9, #FF1744
+        );
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,0.08);
+    }
+    .color-trigger input[type="color"] {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      opacity: 0;
+      cursor: pointer;
+      border: 0; padding: 0;
+    }
+
+    /* Swatch grid for accent picker */
+    .swatches {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: var(--space-2);
+    }
+    .swatch {
+      aspect-ratio: 1;
+      border-radius: var(--radius-sm);
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: transform var(--motion-fast), border-color var(--motion-fast);
+    }
+    .swatch:hover { transform: scale(1.08); }
+    .swatch.is-active { border-color: var(--color-text); }
+
+    /* ============================================================
+       SPEC ROWS — shared pattern for token documentation
+       ============================================================ */
+    .spec {
+      display: flex;
+      flex-direction: column;
+      border-top: var(--border);
+    }
+    .spec__row {
+      display: grid;
+      grid-template-columns: 1fr minmax(220px, 280px);
+      gap: var(--space-5);
+      padding: var(--space-4) 0;
+      border-bottom: var(--border);
+      align-items: center;
+    }
+    .spec__example {
+      min-width: 0;
+      overflow: hidden;
+    }
+    .spec__meta {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+    }
+    .spec__name { color: var(--color-text); }
+    .spec__value { color: var(--color-text-subtle); }
+
+    /* Copy chip — clickable token */
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-1);
+      padding: 2px 6px;
+      border: var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--color-surface);
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+      cursor: pointer;
+      transition: background var(--motion-fast), color var(--motion-fast);
+      user-select: none;
+    }
+    .chip:hover { background: var(--color-sunken); color: var(--color-text); }
+    .chip.is-copied { color: var(--color-success); border-color: var(--color-success); }
+
+    /* Color palette */
+    .palette {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: var(--space-5);
+    }
+    .palette--narrow { grid-template-columns: repeat(4, 1fr); }
+    .token {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+      max-width: 130px;
+    }
+    .token__swatch {
+      aspect-ratio: 1;
+      border-radius: var(--radius-md);
+      border: var(--border);
+      cursor: pointer;
+      position: relative;
+      transition: transform var(--motion-fast), box-shadow var(--motion-fast);
+    }
+    .token__swatch:hover { transform: translateY(-2px); box-shadow: var(--shadow-sm); }
+    .token__swatch::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,0.04);
+      pointer-events: none;
+    }
+    .token__hex {
+      font-family: var(--font-mono);
+      font-size: var(--text-sm);
+      color: var(--color-text);
+      cursor: pointer;
+      user-select: all;
+      letter-spacing: 0;
+    }
+    .token__hex:hover { color: var(--color-accent); }
+    .token__name {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      color: var(--color-text-subtle);
+    }
+    .token.is-copied .token__hex { color: var(--color-success); }
+    .token__picker {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      border: 0;
+      padding: 0;
+      background: transparent;
+    }
+
+    /* Type specimens */
+    .type-specimen { color: var(--color-text); }
+
+    /* Spacing visualizer */
+    .space-bar {
+      height: 12px;
+      background: var(--color-accent);
+      border-radius: 2px;
+      opacity: 0.85;
+    }
+
+    /* Radius/shadow sample */
+    .sample {
+      height: 80px;
+      background: var(--color-surface);
+      border: var(--border);
+    }
+    .sample--shadow { border: 0; }
+
+    /* Icon grid */
+    .icon-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: var(--space-2);
+    }
+    .icon-cell {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-4) var(--space-2);
+      border: var(--border);
+      border-radius: var(--radius-md);
+      background: var(--color-surface);
+      cursor: pointer;
+      transition: background var(--motion-fast), border-color var(--motion-fast);
+    }
+    .icon-cell:hover { background: var(--color-sunken); border-color: var(--color-border-strong); }
+    .icon-cell svg { color: var(--color-text); }
+    .icon-cell__name {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--color-text-subtle);
+    }
+
+    /* Callout — explanatory prose block */
+    .callout {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-5);
+      padding: var(--space-5);
+      background: var(--color-sunken);
+      border: var(--border);
+      border-radius: var(--radius-lg);
+      margin-bottom: var(--space-6);
+    }
+    .callout__group { display: flex; flex-direction: column; gap: var(--space-2); }
+    .callout__label {
+      font-size: var(--text-xs);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--color-text-subtle);
+    }
+    .callout p {
+      font-size: var(--text-sm);
+      line-height: var(--leading-relaxed);
+      color: var(--color-text-muted);
+    }
+    .callout strong { color: var(--color-text); font-weight: 600; }
+    .callout em { color: var(--color-text); font-style: normal; font-weight: 500; }
+    @media (max-width: 900px) { .callout { grid-template-columns: 1fr; } }
+
+    /* Section divider — used between subsections */
+    .divider {
+      height: 1px; background: var(--color-border);
+      margin: var(--space-6) 0;
+    }
+
+    /* Placeholder card */
+    .placeholder {
+      border: 1px dashed var(--color-border-strong);
+      border-radius: var(--radius-md);
+      padding: var(--space-6);
+      color: var(--color-text-subtle);
+      text-align: center;
+      font-size: var(--text-sm);
+      background: var(--color-surface);
+    }
+
+    /* ============================================================
+       MODAL — export dialog
+       ============================================================ */
+    .modal-backdrop {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.4);
+      display: none;
+      align-items: center; justify-content: center;
+      z-index: 100;
+      animation: fade var(--motion-base);
+    }
+    .modal-backdrop.is-open { display: flex; }
+    @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+    .modal {
+      width: min(800px, 92vw);
+      max-height: 86vh;
+      background: var(--color-surface);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-xl);
+      display: flex; flex-direction: column;
+      overflow: hidden;
+    }
+    .modal__header {
+      padding: var(--space-4) var(--space-5);
+      border-bottom: var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .modal__tabs {
+      display: flex; gap: var(--space-1);
+      padding: var(--space-3) var(--space-5) 0;
+      border-bottom: var(--border);
+    }
+    .modal__tab {
+      padding: var(--space-2) var(--space-3);
+      border: 0; background: transparent;
+      color: var(--color-text-muted);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+    }
+    .modal__tab.is-active {
+      color: var(--color-text);
+      border-bottom-color: var(--color-accent);
+    }
+    .modal__body { padding: var(--space-5); overflow: auto; flex: 1; }
+    .modal__pre {
+      background: var(--color-sunken);
+      border: var(--border);
+      border-radius: var(--radius-md);
+      padding: var(--space-4);
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      line-height: var(--leading-normal);
+      overflow: auto;
+      max-height: 50vh;
+      white-space: pre;
+      color: var(--color-text);
+    }
+    .modal__footer {
+      padding: var(--space-3) var(--space-5);
+      border-top: var(--border);
+      display: flex; gap: var(--space-2); justify-content: flex-end;
+    }
+  </style>
+</head>
+<body>
+  <div class="app" id="app" data-drawer="open">
+
+    <!-- ========== TOPBAR ========== -->
+    <header class="topbar">
+      <div class="topbar__brand">
+        <div class="topbar__brand-mark">DS</div>
+        <span>Design System</span>
+      </div>
+      <div class="topbar__status" id="status">
+        <span class="dot" id="statusDot"></span>
+        <span id="statusText">Saved</span>
+      </div>
+      <div class="topbar__spacer"></div>
+      <button class="icon-btn" id="themeToggle" title="Toggle light / dark" aria-label="Toggle theme">
+        <svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+        <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+      <button class="btn btn--sm" id="resetBtn">Reset</button>
+      <button class="btn btn--sm" id="saveBtn">Save</button>
+      <button class="btn btn--primary btn--sm" id="exportBtn">Export</button>
+    </header>
+
+    <!-- ========== SIDEBAR ========== -->
+    <aside class="sidebar">
+      <div class="sidebar__group">
+        <div class="sidebar__label">Foundations</div>
+        <a href="#typography" class="sidebar__link">Typography</a>
+        <a href="#color" class="sidebar__link">Color</a>
+        <a href="#spacing" class="sidebar__link">Spacing</a>
+        <a href="#radius" class="sidebar__link">Radius</a>
+        <a href="#shadows" class="sidebar__link">Shadows</a>
+        <a href="#icons" class="sidebar__link">Icons</a>
+      </div>
+      <div class="sidebar__group">
+        <div class="sidebar__label">Components</div>
+        <a href="#buttons" class="sidebar__link">Buttons</a>
+        <a href="#inputs" class="sidebar__link">Inputs</a>
+        <a href="#navigation" class="sidebar__link">Navigation</a>
+        <a href="#cards" class="sidebar__link">Cards</a>
+        <a href="#tables" class="sidebar__link">Tables</a>
+        <a href="#lists" class="sidebar__link">Lists</a>
+        <a href="#tabs" class="sidebar__link">Tabs</a>
+        <a href="#modals" class="sidebar__link">Modals</a>
+        <a href="#toasts" class="sidebar__link">Toasts</a>
+        <a href="#badges" class="sidebar__link">Badges</a>
+      </div>
+      <div class="sidebar__group">
+        <div class="sidebar__label">Patterns</div>
+        <a href="#app-shell" class="sidebar__link">App shell</a>
+        <a href="#dashboard" class="sidebar__link">Dashboard</a>
+        <a href="#settings" class="sidebar__link">Settings</a>
+        <a href="#auth" class="sidebar__link">Authentication</a>
+        <a href="#data-mgmt" class="sidebar__link">Data management</a>
+        <a href="#forms" class="sidebar__link">Forms</a>
+      </div>
+      <div class="sidebar__group">
+        <div class="sidebar__label">States</div>
+        <a href="#empty" class="sidebar__link">Empty</a>
+        <a href="#loading" class="sidebar__link">Loading</a>
+        <a href="#error" class="sidebar__link">Error</a>
+      </div>
+    </aside>
+
+    <!-- ========== CANVAS ========== -->
+    <main class="canvas">
+
+      <section class="section" id="intro">
+        <div class="section__eyebrow">Living design system</div>
+        <h1 class="section__title" style="font-size: var(--text-3xl);">Calm, opinionated, yours to fork.</h1>
+        <p class="section__lede">
+          Adjust the controls on the right to dial in your aesthetic. Every component on this page reacts live.
+          When you're happy, hit Export — you'll get a <code>design.md</code>, a <code>tokens.css</code>,
+          and the customized HTML file itself. Drop any of them into a repo as the single source of truth for AI agents.
+        </p>
+      </section>
+
+      <!-- Foundations -->
+      <section class="section" id="typography">
+        <div class="section__eyebrow">Foundations</div>
+        <h2 class="section__title">Typography</h2>
+        <p class="section__lede">
+          A single sans family (Inter) with a geometric scale derived from <code>--font-size-base</code> × <code>--type-ratio</code>.
+          Adjust either in the controls panel and the whole scale recomputes.
+        </p>
+
+        <h3 class="subsection__title">Type scale</h3>
+        <div class="spec" id="typeScale">
+          <div class="spec__row">
+            <div class="spec__example"><span class="type-specimen" style="font-size: var(--text-3xl); font-weight: 600;">Heading 3xl</span></div>
+            <div class="spec__meta"><span class="spec__name">--text-3xl</span><span class="spec__value" data-computed="--text-3xl"></span></div>
+          </div>
+          <div class="spec__row">
+            <div class="spec__example"><span class="type-specimen" style="font-size: var(--text-2xl); font-weight: 600;">Heading 2xl</span></div>
+            <div class="spec__meta"><span class="spec__name">--text-2xl</span><span class="spec__value" data-computed="--text-2xl"></span></div>
+          </div>
+          <div class="spec__row">
+            <div class="spec__example"><span class="type-specimen" style="font-size: var(--text-xl); font-weight: 600;">Heading xl</span></div>
+            <div class="spec__meta"><span class="spec__name">--text-xl</span><span class="spec__value" data-computed="--text-xl"></span></div>
+          </div>
+          <div class="spec__row">
+            <div class="spec__example"><span class="type-specimen" style="font-size: var(--text-lg); font-weight: 600;">Heading lg</span></div>
+            <div class="spec__meta"><span class="spec__name">--text-lg</span><span class="spec__value" data-computed="--text-lg"></span></div>
+          </div>
+          <div class="spec__row">
+            <div class="spec__example"><span class="type-specimen" style="font-size: var(--text-md);">Body md — the quick brown fox jumps over the lazy dog.</span></div>
+            <div class="spec__meta"><span class="spec__name">--text-md</span><span class="spec__value" data-computed="--text-md"></span></div>
+          </div>
+          <div class="spec__row">
+            <div class="spec__example"><span class="type-specimen" style="font-size: var(--text-sm);">Body sm — the quick brown fox jumps over the lazy dog.</span></div>
+            <div class="spec__meta"><span class="spec__name">--text-sm</span><span class="spec__value" data-computed="--text-sm"></span></div>
+          </div>
+          <div class="spec__row">
+            <div class="spec__example"><span class="type-specimen" style="font-size: var(--text-xs); color: var(--color-text-muted);">Caption xs — labels, meta, footnotes.</span></div>
+            <div class="spec__meta"><span class="spec__name">--text-xs</span><span class="spec__value" data-computed="--text-xs"></span></div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <h3 class="subsection__title">Weights</h3>
+        <div class="spec">
+          <div class="spec__row"><div class="spec__example" style="font-size: var(--text-lg); font-weight: 400;">Regular — body copy</div><div class="spec__meta"><span class="spec__name">font-weight: 400</span></div></div>
+          <div class="spec__row"><div class="spec__example" style="font-size: var(--text-lg); font-weight: 500;">Medium — UI labels, links</div><div class="spec__meta"><span class="spec__name">font-weight: 500</span></div></div>
+          <div class="spec__row"><div class="spec__example" style="font-size: var(--text-lg); font-weight: 600;">Semibold — headings</div><div class="spec__meta"><span class="spec__name">font-weight: 600</span></div></div>
+          <div class="spec__row"><div class="spec__example" style="font-size: var(--text-lg); font-weight: 700;">Bold — emphasis only</div><div class="spec__meta"><span class="spec__name">font-weight: 700</span></div></div>
+        </div>
+
+        <div class="divider"></div>
+
+        <h3 class="subsection__title">Line height</h3>
+        <div class="spec">
+          <div class="spec__row">
+            <div class="spec__example" style="line-height: var(--leading-tight); max-width: 50ch;">Tight — used for headings and short lines where vertical compactness matters. Multi-line example so you can see the rhythm of the leading.</div>
+            <div class="spec__meta"><span class="spec__name">--leading-tight</span><span class="spec__value">1.2</span></div>
+          </div>
+          <div class="spec__row">
+            <div class="spec__example" style="line-height: var(--leading-normal); max-width: 50ch;">Normal — the default for body copy. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.</div>
+            <div class="spec__meta"><span class="spec__name">--leading-normal</span><span class="spec__value">1.5</span></div>
+          </div>
+          <div class="spec__row">
+            <div class="spec__example" style="line-height: var(--leading-relaxed); max-width: 50ch;">Relaxed — long-form reading. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.</div>
+            <div class="spec__meta"><span class="spec__name">--leading-relaxed</span><span class="spec__value">1.7</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="color">
+        <div class="section__eyebrow">Foundations</div>
+        <h2 class="section__title">Color</h2>
+        <p class="section__lede">
+          Neutrals carry the page. A single restrained accent draws attention to actions and selection.
+          Four semantic colors signal status only — never decoration. Click any swatch to copy its hex,
+          or click the swatch itself to pick a custom color for that token.
+        </p>
+
+        <div class="callout">
+          <div class="callout__group">
+            <div class="callout__label">Primary</div>
+            <p>The brand accent and its derived variants. Use for primary actions, links, focus rings, and selection. Pick anything — the rest of the page derives around it.</p>
+          </div>
+          <div class="callout__group">
+            <div class="callout__label">Neutral</div>
+            <p>The grays that carry 95% of any interface — backgrounds, text, borders. Each token is named by its <em>role</em> (<code>bg</code>, <code>surface</code>, <code>border</code>, <code>text-muted</code>), not by shade. That's what lets layouts read the same regardless of brand, and what makes dark mode "just work."</p>
+          </div>
+          <div class="callout__group">
+            <div class="callout__label">Semantic</div>
+            <p>Four status colors with fixed meanings: <strong>success</strong> (green), <strong>warning</strong> (amber), <strong>danger</strong> (red), <strong>info</strong> (blue). They stay recognizable regardless of your brand accent — so a "delete" button always reads as destructive, never as decoration.</p>
+          </div>
+        </div>
+
+        <h3 class="subsection__title">Primary</h3>
+        <div class="palette palette--narrow" data-palette="primary">
+          <!-- tokens injected by JS -->
+        </div>
+
+        <div class="divider"></div>
+
+        <h3 class="subsection__title">Neutral</h3>
+        <div class="palette" data-palette="neutral">
+          <!-- tokens injected by JS -->
+        </div>
+
+        <div class="divider"></div>
+
+        <h3 class="subsection__title">Semantic</h3>
+        <div class="palette palette--narrow" data-palette="semantic">
+          <!-- tokens injected by JS -->
+        </div>
+      </section>
+
+      <section class="section" id="spacing">
+        <div class="section__eyebrow">Foundations</div>
+        <h2 class="section__title">Spacing</h2>
+        <p class="section__lede">
+          Geometric scale from a configurable base unit. Use these for padding, margin, and gap — never hardcode pixels.
+        </p>
+
+        <div class="spec" id="spaceScale">
+          <div class="spec__row"><div class="spec__example"><div class="space-bar" style="width: var(--space-1);"></div></div><div class="spec__meta"><span class="spec__name">--space-1</span><span class="spec__value" data-computed="--space-1"></span></div></div>
+          <div class="spec__row"><div class="spec__example"><div class="space-bar" style="width: var(--space-2);"></div></div><div class="spec__meta"><span class="spec__name">--space-2</span><span class="spec__value" data-computed="--space-2"></span></div></div>
+          <div class="spec__row"><div class="spec__example"><div class="space-bar" style="width: var(--space-3);"></div></div><div class="spec__meta"><span class="spec__name">--space-3</span><span class="spec__value" data-computed="--space-3"></span></div></div>
+          <div class="spec__row"><div class="spec__example"><div class="space-bar" style="width: var(--space-4);"></div></div><div class="spec__meta"><span class="spec__name">--space-4</span><span class="spec__value" data-computed="--space-4"></span></div></div>
+          <div class="spec__row"><div class="spec__example"><div class="space-bar" style="width: var(--space-5);"></div></div><div class="spec__meta"><span class="spec__name">--space-5</span><span class="spec__value" data-computed="--space-5"></span></div></div>
+          <div class="spec__row"><div class="spec__example"><div class="space-bar" style="width: var(--space-6);"></div></div><div class="spec__meta"><span class="spec__name">--space-6</span><span class="spec__value" data-computed="--space-6"></span></div></div>
+          <div class="spec__row"><div class="spec__example"><div class="space-bar" style="width: var(--space-7);"></div></div><div class="spec__meta"><span class="spec__name">--space-7</span><span class="spec__value" data-computed="--space-7"></span></div></div>
+          <div class="spec__row"><div class="spec__example"><div class="space-bar" style="width: var(--space-8);"></div></div><div class="spec__meta"><span class="spec__name">--space-8</span><span class="spec__value" data-computed="--space-8"></span></div></div>
+          <div class="spec__row"><div class="spec__example"><div class="space-bar" style="width: var(--space-9);"></div></div><div class="spec__meta"><span class="spec__name">--space-9</span><span class="spec__value" data-computed="--space-9"></span></div></div>
+        </div>
+      </section>
+
+      <section class="section" id="radius">
+        <div class="section__eyebrow">Foundations</div>
+        <h2 class="section__title">Radius</h2>
+        <p class="section__lede">Four steps plus a full pill. The radius style selector in controls re-maps the whole scale at once.</p>
+
+        <div class="palette" style="grid-template-columns: repeat(5, 1fr);">
+          <div class="token"><div class="sample" style="border-radius: var(--radius-sm);"></div><div class="token__name">--radius-sm</div><div class="token__value" data-computed="--radius-sm"></div></div>
+          <div class="token"><div class="sample" style="border-radius: var(--radius-md);"></div><div class="token__name">--radius-md</div><div class="token__value" data-computed="--radius-md"></div></div>
+          <div class="token"><div class="sample" style="border-radius: var(--radius-lg);"></div><div class="token__name">--radius-lg</div><div class="token__value" data-computed="--radius-lg"></div></div>
+          <div class="token"><div class="sample" style="border-radius: var(--radius-xl);"></div><div class="token__name">--radius-xl</div><div class="token__value" data-computed="--radius-xl"></div></div>
+          <div class="token"><div class="sample" style="border-radius: var(--radius-pill); height: 32px; margin-top: 24px;"></div><div class="token__name">--radius-pill</div><div class="token__value">999px</div></div>
+        </div>
+      </section>
+
+      <section class="section" id="shadows">
+        <div class="section__eyebrow">Foundations</div>
+        <h2 class="section__title">Shadows</h2>
+        <p class="section__lede">Five levels of elevation. Used sparingly — most surfaces sit flat with a hairline border.</p>
+
+        <div class="palette" style="grid-template-columns: repeat(5, 1fr); padding: var(--space-5) 0;">
+          <div class="token"><div class="sample sample--shadow" style="box-shadow: var(--shadow-xs); border-radius: var(--radius-md);"></div><div class="token__name">--shadow-xs</div><div class="token__value">subtle lift</div></div>
+          <div class="token"><div class="sample sample--shadow" style="box-shadow: var(--shadow-sm); border-radius: var(--radius-md);"></div><div class="token__name">--shadow-sm</div><div class="token__value">cards</div></div>
+          <div class="token"><div class="sample sample--shadow" style="box-shadow: var(--shadow-md); border-radius: var(--radius-md);"></div><div class="token__name">--shadow-md</div><div class="token__value">popovers</div></div>
+          <div class="token"><div class="sample sample--shadow" style="box-shadow: var(--shadow-lg); border-radius: var(--radius-md);"></div><div class="token__name">--shadow-lg</div><div class="token__value">dropdowns</div></div>
+          <div class="token"><div class="sample sample--shadow" style="box-shadow: var(--shadow-xl); border-radius: var(--radius-md);"></div><div class="token__name">--shadow-xl</div><div class="token__value">modals</div></div>
+        </div>
+      </section>
+
+      <section class="section" id="icons">
+        <div class="section__eyebrow">Foundations</div>
+        <h2 class="section__title">Icons</h2>
+        <p class="section__lede">
+          Inline SVG, 20×20 by default, 1.75 stroke, <code>currentColor</code> so they inherit text color.
+          Click any icon to copy its SVG.
+        </p>
+
+        <div class="icon-grid" id="iconGrid">
+          <div class="icon-cell" data-name="home"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2h-4a1 1 0 0 1-1-1v-6h-4v6a1 1 0 0 1-1 1H5a2 2 0 0 1-2-2z"/></svg><span class="icon-cell__name">home</span></div>
+          <div class="icon-cell" data-name="search"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><span class="icon-cell__name">search</span></div>
+          <div class="icon-cell" data-name="settings"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span class="icon-cell__name">settings</span></div>
+          <div class="icon-cell" data-name="user"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span class="icon-cell__name">user</span></div>
+          <div class="icon-cell" data-name="users"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg><span class="icon-cell__name">users</span></div>
+          <div class="icon-cell" data-name="bell"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span class="icon-cell__name">bell</span></div>
+
+          <div class="icon-cell" data-name="mail"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 5L2 7"/></svg><span class="icon-cell__name">mail</span></div>
+          <div class="icon-cell" data-name="calendar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span class="icon-cell__name">calendar</span></div>
+          <div class="icon-cell" data-name="clock"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><span class="icon-cell__name">clock</span></div>
+          <div class="icon-cell" data-name="check"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span class="icon-cell__name">check</span></div>
+          <div class="icon-cell" data-name="x"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg><span class="icon-cell__name">x</span></div>
+          <div class="icon-cell" data-name="plus"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg><span class="icon-cell__name">plus</span></div>
+
+          <div class="icon-cell" data-name="chevron-right"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg><span class="icon-cell__name">chevron-right</span></div>
+          <div class="icon-cell" data-name="chevron-down"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg><span class="icon-cell__name">chevron-down</span></div>
+          <div class="icon-cell" data-name="arrow-right"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg><span class="icon-cell__name">arrow-right</span></div>
+          <div class="icon-cell" data-name="external"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg><span class="icon-cell__name">external</span></div>
+          <div class="icon-cell" data-name="file"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg><span class="icon-cell__name">file</span></div>
+          <div class="icon-cell" data-name="folder"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg><span class="icon-cell__name">folder</span></div>
+
+          <div class="icon-cell" data-name="download"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg><span class="icon-cell__name">download</span></div>
+          <div class="icon-cell" data-name="upload"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5"/><path d="M12 3v12"/></svg><span class="icon-cell__name">upload</span></div>
+          <div class="icon-cell" data-name="trash"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg><span class="icon-cell__name">trash</span></div>
+          <div class="icon-cell" data-name="info"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg><span class="icon-cell__name">info</span></div>
+          <div class="icon-cell" data-name="alert-triangle"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m10.29 3.86-8.55 14.83A2 2 0 0 0 3.46 22h17.08a2 2 0 0 0 1.72-3.31L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg><span class="icon-cell__name">alert-triangle</span></div>
+          <div class="icon-cell" data-name="more"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg><span class="icon-cell__name">more</span></div>
+        </div>
+      </section>
+
+      <!-- Components -->
+      <section class="section" id="buttons">
+        <div class="section__eyebrow">Components</div>
+        <h2 class="section__title">Buttons</h2>
+        <p class="section__lede">Primary, secondary, ghost. Sizes, states, with-icon, loading.</p>
+        <div style="display:flex; gap: var(--space-3); flex-wrap: wrap;">
+          <button class="btn btn--primary">Primary</button>
+          <button class="btn">Secondary</button>
+          <button class="btn btn--ghost">Ghost</button>
+          <button class="btn" disabled style="opacity:0.5; cursor: not-allowed;">Disabled</button>
+        </div>
+        <p style="margin-top: var(--space-4); color: var(--color-text-muted); font-size: var(--text-xs);">
+          Full variant matrix + HTML snippets — coming next iteration.
+        </p>
+      </section>
+
+      <section class="section" id="inputs"><div class="section__eyebrow">Components</div><h2 class="section__title">Inputs</h2><div class="placeholder">Text, textarea, select, checkbox, radio, switch, slider — next iteration.</div></section>
+      <section class="section" id="navigation"><div class="section__eyebrow">Components</div><h2 class="section__title">Navigation</h2><div class="placeholder">Topbar, sidebar, breadcrumbs, pagination — next iteration.</div></section>
+      <section class="section" id="cards"><div class="section__eyebrow">Components</div><h2 class="section__title">Cards</h2><div class="placeholder">Card variants — next iteration.</div></section>
+      <section class="section" id="tables"><div class="section__eyebrow">Components</div><h2 class="section__title">Tables</h2><div class="placeholder">Sortable, dense, with row actions — next iteration.</div></section>
+      <section class="section" id="lists"><div class="section__eyebrow">Components</div><h2 class="section__title">Lists</h2><div class="placeholder">Definition, action, media lists — next iteration.</div></section>
+      <section class="section" id="tabs"><div class="section__eyebrow">Components</div><h2 class="section__title">Tabs</h2><div class="placeholder">Tabs — next iteration.</div></section>
+      <section class="section" id="modals"><div class="section__eyebrow">Components</div><h2 class="section__title">Modals</h2><div class="placeholder">Modals + drawers — next iteration.</div></section>
+      <section class="section" id="toasts"><div class="section__eyebrow">Components</div><h2 class="section__title">Toasts</h2><div class="placeholder">Toasts — next iteration.</div></section>
+      <section class="section" id="badges"><div class="section__eyebrow">Components</div><h2 class="section__title">Badges &amp; Tags</h2><div class="placeholder">Badges, tags, chips, avatars — next iteration.</div></section>
+
+      <!-- Patterns -->
+      <section class="section" id="app-shell"><div class="section__eyebrow">Patterns</div><h2 class="section__title">App shell</h2><div class="placeholder">Sidebar + topbar + content composition — next iteration.</div></section>
+      <section class="section" id="dashboard"><div class="section__eyebrow">Patterns</div><h2 class="section__title">Dashboard</h2><div class="placeholder">Stat cards + chart + table — next iteration.</div></section>
+      <section class="section" id="settings"><div class="section__eyebrow">Patterns</div><h2 class="section__title">Settings</h2><div class="placeholder">Sectioned settings page — next iteration.</div></section>
+      <section class="section" id="auth"><div class="section__eyebrow">Patterns</div><h2 class="section__title">Authentication</h2><div class="placeholder">Sign-in, sign-up, forgot password — next iteration.</div></section>
+      <section class="section" id="data-mgmt"><div class="section__eyebrow">Patterns</div><h2 class="section__title">Data management</h2><div class="placeholder">Search + filter + table + bulk actions — next iteration.</div></section>
+      <section class="section" id="forms"><div class="section__eyebrow">Patterns</div><h2 class="section__title">Forms</h2><div class="placeholder">Multi-step, validated forms — next iteration.</div></section>
+
+      <!-- States -->
+      <section class="section" id="empty"><div class="section__eyebrow">States</div><h2 class="section__title">Empty</h2><div class="placeholder">Empty state patterns — next iteration.</div></section>
+      <section class="section" id="loading"><div class="section__eyebrow">States</div><h2 class="section__title">Loading</h2><div class="placeholder">Skeletons + spinners — next iteration.</div></section>
+      <section class="section" id="error"><div class="section__eyebrow">States</div><h2 class="section__title">Error</h2><div class="placeholder">Inline + page-level error states — next iteration.</div></section>
+
+    </main>
+
+    <!-- ========== CONTROLS DRAWER ========== -->
+    <aside class="drawer" id="drawer">
+      <div class="drawer__header">
+        <h3 class="drawer__title">Theme controls</h3>
+        <button class="icon-btn drawer__collapse" id="drawerCollapse" title="Hide controls" aria-label="Hide controls">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+      </div>
+      <p class="drawer__hint">Tweak any value; the page updates live. Your prefs persist in this browser.</p>
+
+      <div class="field">
+        <div class="field__label">Preset</div>
+        <select class="select" id="preset">
+          <option value="default">Default</option>
+          <option value="mono">Mono</option>
+          <option value="warm">Warm</option>
+          <option value="vibrant">Vibrant</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <div class="field__label">Mode</div>
+        <div class="segmented" data-control="mode">
+          <button class="segmented__btn is-active" data-value="light">Light</button>
+          <button class="segmented__btn" data-value="dark">Dark</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field__label">Accent</div>
+        <div class="swatches" id="accentSwatches"></div>
+        <div class="field__row" style="margin-top: var(--space-2);">
+          <input class="input" id="accentHex" placeholder="#3B5BDB" />
+          <label class="color-trigger" title="Pick any color">
+            <span class="color-trigger__swatch" id="accentTriggerSwatch"></span>
+            <input type="color" id="accentNative" />
+          </label>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field__label">Font</div>
+        <div class="segmented" data-control="font">
+          <button class="segmented__btn is-active" data-value="inter">Inter</button>
+          <button class="segmented__btn" data-value="system">System</button>
+          <button class="segmented__btn" data-value="serif">Serif</button>
+          <button class="segmented__btn" data-value="mono">Mono</button>
+        </div>
+      </div>
+
+      <div class="field field--row">
+        <div class="field__label">Base font size</div>
+        <div class="counter" data-counter="fontSize" data-min="12" data-max="18" data-step="1" data-unit="px">
+          <button class="counter__btn" data-act="dec" aria-label="Decrease">−</button>
+          <div class="counter__value" id="fontSizeVal">14px</div>
+          <button class="counter__btn" data-act="inc" aria-label="Increase">+</button>
+        </div>
+      </div>
+
+      <div class="field field--row">
+        <div class="field__label">Type scale ratio</div>
+        <div class="counter" data-counter="typeRatio" data-min="1.1" data-max="1.4" data-step="0.025" data-decimals="3">
+          <button class="counter__btn" data-act="dec" aria-label="Decrease">−</button>
+          <div class="counter__value" id="typeRatioVal">1.200</div>
+          <button class="counter__btn" data-act="inc" aria-label="Increase">+</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field__label">
+          <span>Spacing base</span>
+          <span class="field__value" id="spaceBaseVal">4px</span>
+        </div>
+        <div class="segmented" data-control="spaceBase">
+          <button class="segmented__btn is-active" data-value="4">4px</button>
+          <button class="segmented__btn" data-value="6">6px</button>
+          <button class="segmented__btn" data-value="8">8px</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field__label">Radius style</div>
+        <div class="segmented" data-control="radius">
+          <button class="segmented__btn" data-value="sharp">Sharp</button>
+          <button class="segmented__btn is-active" data-value="soft">Soft</button>
+          <button class="segmented__btn" data-value="round">Round</button>
+          <button class="segmented__btn" data-value="pill">Pill</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field__label">Shadow style</div>
+        <div class="segmented" data-control="shadow">
+          <button class="segmented__btn" data-value="none">None</button>
+          <button class="segmented__btn" data-value="flat">Flat</button>
+          <button class="segmented__btn is-active" data-value="soft">Soft</button>
+          <button class="segmented__btn" data-value="dramatic">Drama</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field__label">Density</div>
+        <div class="segmented" data-control="density">
+          <button class="segmented__btn" data-value="compact">Compact</button>
+          <button class="segmented__btn is-active" data-value="comfortable">Comfortable</button>
+          <button class="segmented__btn" data-value="spacious">Spacious</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field__label">Border weight</div>
+        <div class="segmented" data-control="border">
+          <button class="segmented__btn is-active" data-value="1">1px</button>
+          <button class="segmented__btn" data-value="1.5">1.5px</button>
+          <button class="segmented__btn" data-value="2">2px</button>
+        </div>
+      </div>
+
+    </aside>
+
+    <button class="drawer-reopen" id="drawerReopen" title="Show controls" aria-label="Show controls">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+
+  </div>
+
+  <!-- ========== EXPORT MODAL ========== -->
+  <div class="modal-backdrop" id="exportModal">
+    <div class="modal" role="dialog" aria-modal="true" aria-label="Export theme">
+      <div class="modal__header">
+        <strong>Export theme</strong>
+        <button class="btn btn--ghost btn--sm" id="closeModal">Close</button>
+      </div>
+      <div class="modal__tabs">
+        <button class="modal__tab is-active" data-tab="md">design.md</button>
+        <button class="modal__tab" data-tab="css">tokens.css</button>
+        <button class="modal__tab" data-tab="html">design-system.html</button>
+      </div>
+      <div class="modal__body">
+        <pre class="modal__pre" id="exportContent">Generating…</pre>
+      </div>
+      <div class="modal__footer">
+        <button class="btn btn--sm" id="copyExport">Copy</button>
+        <button class="btn btn--primary btn--sm" id="downloadExport">Download</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  /* ============================================================
+     STATE — the single source of truth for theme prefs.
+     Default values mirror :root CSS exactly.
+     ============================================================ */
+  const DEFAULTS = {
+    mode: 'light',
+    accent: '#3B5BDB',
+    font: 'inter',
+    fontSize: 14,
+    typeRatio: 1.2,
+    spaceBase: 4,
+    radius: 'soft',
+    shadow: 'soft',
+    density: 'comfortable',
+    border: 1,
+    /* Per-token color overrides — keyed by CSS var name */
+    colors: {},
+  };
+
+  /* Tokens displayed in the Color section, grouped */
+  const PALETTE_GROUPS = {
+    primary: [
+      { name: '--color-accent',       label: 'accent' },
+      { name: '--color-accent-hover', label: 'accent-hover' },
+      { name: '--color-accent-soft',  label: 'accent-soft' },
+      { name: '--color-accent-text',  label: 'accent-text' },
+    ],
+    neutral: [
+      { name: '--color-bg',             label: 'bg' },
+      { name: '--color-surface',        label: 'surface' },
+      { name: '--color-sunken',         label: 'sunken' },
+      { name: '--color-border',         label: 'border' },
+      { name: '--color-border-strong',  label: 'border-strong' },
+      { name: '--color-text-subtle',    label: 'text-subtle' },
+      { name: '--color-text-muted',     label: 'text-muted' },
+      { name: '--color-text',           label: 'text' },
+    ],
+    semantic: [
+      { name: '--color-success', label: 'success' },
+      { name: '--color-warning', label: 'warning' },
+      { name: '--color-danger',  label: 'danger' },
+      { name: '--color-info',    label: 'info' },
+    ],
+  };
+
+  const PRESETS = {
+    default: { ...DEFAULTS },
+    mono:    { ...DEFAULTS, accent: '#111111', shadow: 'flat',     radius: 'sharp' },
+    warm:    { ...DEFAULTS, accent: '#C2410C', font: 'serif',      radius: 'round' },
+    vibrant: { ...DEFAULTS, accent: '#7C3AED', shadow: 'dramatic', radius: 'round' },
+  };
+
+  const ACCENT_SWATCHES = [
+    '#3B5BDB', '#7C3AED', '#0EA5E9', '#10B981',
+    '#F59E0B', '#EF4444', '#EC4899', '#14B8A6',
+    '#0891B2', '#65A30D', '#C2410C', '#111111',
+  ];
+
+  const FONT_STACKS = {
+    inter:  "'Inter', ui-sans-serif, system-ui, sans-serif",
+    system: "ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif",
+    serif:  "ui-serif, Georgia, 'Times New Roman', serif",
+    mono:   "'JetBrains Mono', ui-monospace, Menlo, monospace",
+  };
+
+  const RADIUS_PRESETS = {
+    sharp: { sm: '0px', md: '2px',  lg: '4px',  xl: '6px'  },
+    soft:  { sm: '4px', md: '8px',  lg: '12px', xl: '16px' },
+    round: { sm: '8px', md: '12px', lg: '16px', xl: '24px' },
+    pill:  { sm: '12px', md: '999px', lg: '999px', xl: '999px' },
+  };
+
+  const SHADOW_PRESETS = {
+    none: { xs:'none', sm:'none', md:'none', lg:'none', xl:'none' },
+    flat: {
+      xs: '0 0 0 1px rgba(0,0,0,0.04)',
+      sm: '0 0 0 1px rgba(0,0,0,0.06)',
+      md: '0 0 0 1px rgba(0,0,0,0.08)',
+      lg: '0 0 0 1px rgba(0,0,0,0.10)',
+      xl: '0 0 0 1px rgba(0,0,0,0.12)',
+    },
+    soft: {
+      xs: '0 1px 2px rgba(0,0,0,0.04)',
+      sm: '0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)',
+      md: '0 4px 8px rgba(0,0,0,0.06), 0 2px 4px rgba(0,0,0,0.04)',
+      lg: '0 12px 24px rgba(0,0,0,0.08), 0 4px 8px rgba(0,0,0,0.04)',
+      xl: '0 24px 48px rgba(0,0,0,0.10), 0 8px 16px rgba(0,0,0,0.04)',
+    },
+    dramatic: {
+      xs: '0 2px 4px rgba(0,0,0,0.08)',
+      sm: '0 4px 8px rgba(0,0,0,0.10)',
+      md: '0 8px 16px rgba(0,0,0,0.14)',
+      lg: '0 20px 40px rgba(0,0,0,0.18)',
+      xl: '0 40px 80px rgba(0,0,0,0.22)',
+    },
+  };
+
+  const DENSITY_PRESETS = {
+    compact:     { y: '6px',  x: '12px' },
+    comfortable: { y: '12px', x: '16px' },
+    spacious:    { y: '16px', x: '24px' },
+  };
+
+  const STORAGE_KEY = 'designSystemPrefs';
+  let state = loadState();
+  let dirty = false;
+
+  function loadState() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+      if (saved) return { ...DEFAULTS, ...saved, colors: { ...DEFAULTS.colors, ...(saved.colors || {}) } };
+    } catch {}
+    return { ...DEFAULTS, colors: {} };
+  }
+
+  function persist() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    dirty = false;
+    updateStatus();
+  }
+
+  function markDirty() {
+    dirty = true;
+    updateStatus();
+    /* Auto-save to localStorage so reloads keep the work, but show indicator
+       until user explicitly Exports (which is the "save" the user means). */
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }
+
+  function updateStatus() {
+    const dot  = document.getElementById('statusDot');
+    const text = document.getElementById('statusText');
+    if (dirty) { dot.classList.add('dot--unsaved'); text.textContent = 'Unsaved changes'; }
+    else       { dot.classList.remove('dot--unsaved'); text.textContent = 'Saved'; }
+  }
+
+  /* ============================================================
+     APPLY — write state into CSS custom properties
+     ============================================================ */
+  function applyState() {
+    const root = document.documentElement;
+    root.setAttribute('data-theme', state.mode);
+
+    /* Clear any inline color overrides from a prior state so removed
+       entries truly fall back to the stylesheet / new values. */
+    Object.values(PALETTE_GROUPS).flat().forEach(t => {
+      root.style.removeProperty(t.name);
+    });
+
+    /* Accent */
+    root.style.setProperty('--color-accent', state.accent);
+    root.style.setProperty('--color-accent-hover', shade(state.accent, -0.15));
+    root.style.setProperty('--color-accent-soft', tint(state.accent, 0.9));
+    root.style.setProperty('--color-accent-text', readableOn(state.accent));
+
+    /* Font */
+    root.style.setProperty('--font-sans', FONT_STACKS[state.font]);
+    root.style.setProperty('--font-size-base', state.fontSize + 'px');
+    root.style.setProperty('--type-ratio', state.typeRatio);
+
+    /* Spacing */
+    root.style.setProperty('--space-base', state.spaceBase + 'px');
+
+    /* Radius */
+    const r = RADIUS_PRESETS[state.radius];
+    root.style.setProperty('--radius-sm', r.sm);
+    root.style.setProperty('--radius-md', r.md);
+    root.style.setProperty('--radius-lg', r.lg);
+    root.style.setProperty('--radius-xl', r.xl);
+
+    /* Shadow */
+    const s = SHADOW_PRESETS[state.shadow];
+    root.style.setProperty('--shadow-xs', s.xs);
+    root.style.setProperty('--shadow-sm', s.sm);
+    root.style.setProperty('--shadow-md', s.md);
+    root.style.setProperty('--shadow-lg', s.lg);
+    root.style.setProperty('--shadow-xl', s.xl);
+
+    /* Density */
+    const d = DENSITY_PRESETS[state.density];
+    root.style.setProperty('--density-y', d.y);
+    root.style.setProperty('--density-x', d.x);
+
+    /* Border */
+    root.style.setProperty('--border-width', state.border + 'px');
+
+    /* Per-token color overrides — applied LAST so they win. */
+    Object.entries(state.colors || {}).forEach(([varName, val]) => {
+      if (val) root.style.setProperty(varName, val);
+    });
+
+    /* Reflect into controls */
+    syncControls();
+    refreshComputedReadouts();
+    refreshPalette();
+    /* Sync accent native picker value (so it opens at current accent) */
+    const native = document.getElementById('accentNative');
+    if (native) native.value = state.accent;
+  }
+
+  /* Update every [data-computed] / [data-hex] readout with the resolved value */
+  function refreshComputedReadouts() {
+    const cs = getComputedStyle(document.documentElement);
+    document.querySelectorAll('[data-computed]').forEach(el => {
+      const v = cs.getPropertyValue(el.dataset.computed).trim();
+      /* Resolve calc() expressions for type/space tokens by reading off a probe */
+      el.textContent = resolveValue(el.dataset.computed) || v;
+    });
+    document.querySelectorAll('[data-hex]').forEach(el => {
+      el.textContent = resolveColor(el.dataset.hex);
+    });
+  }
+
+  /* Probe element to get the actually resolved px size for vars defined via calc() */
+  const _probe = (() => {
+    const d = document.createElement('div');
+    d.style.cssText = 'position:absolute;visibility:hidden;height:0;width:0;';
+    document.body.appendChild(d);
+    return d;
+  })();
+  function resolveValue(varName) {
+    _probe.style.width = `var(${varName})`;
+    const w = getComputedStyle(_probe).width;
+    return w && w !== '0px' ? w : null;
+  }
+  function resolveColor(varName) {
+    _probe.style.color = `var(${varName})`;
+    const c = getComputedStyle(_probe).color;
+    return rgbStringToHex(c) || c;
+  }
+  function rgbStringToHex(str) {
+    const m = str.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+    if (!m) return null;
+    return '#' + [m[1],m[2],m[3]].map(n => Number(n).toString(16).padStart(2,'0')).join('').toUpperCase();
+  }
+
+  /* Color helpers — small, dependency-free */
+  function hexToRgb(hex) {
+    const h = hex.replace('#','');
+    const n = parseInt(h.length === 3 ? h.split('').map(c=>c+c).join('') : h, 16);
+    return { r:(n>>16)&255, g:(n>>8)&255, b:n&255 };
+  }
+  function rgbToHex({r,g,b}) {
+    return '#' + [r,g,b].map(v => Math.max(0,Math.min(255,Math.round(v))).toString(16).padStart(2,'0')).join('');
+  }
+  function shade(hex, amt) { /* amt -1..1, negative=darker */
+    const {r,g,b} = hexToRgb(hex);
+    const f = amt < 0 ? 1+amt : 1;
+    const t = amt < 0 ? 0 : 255;
+    const a = Math.abs(amt);
+    return rgbToHex({ r: r*f + t*a, g: g*f + t*a, b: b*f + t*a });
+  }
+  function tint(hex, amt) { return shade(hex, amt); }
+  function readableOn(hex) {
+    const {r,g,b} = hexToRgb(hex);
+    const L = (0.299*r + 0.587*g + 0.114*b) / 255;
+    return L > 0.6 ? '#111111' : '#FFFFFF';
+  }
+
+  /* ============================================================
+     CONTROLS — bind UI to state
+     ============================================================ */
+  function syncControls() {
+    /* Segmented controls */
+    document.querySelectorAll('[data-control]').forEach(group => {
+      const key = group.dataset.control;
+      const val = String(state[key]);
+      group.querySelectorAll('.segmented__btn').forEach(btn => {
+        btn.classList.toggle('is-active', btn.dataset.value === val);
+      });
+    });
+
+    /* Counter labels */
+    document.getElementById('fontSizeVal').textContent  = state.fontSize + 'px';
+    document.getElementById('typeRatioVal').textContent = Number(state.typeRatio).toFixed(3);
+    document.getElementById('spaceBaseVal').textContent = state.spaceBase + 'px';
+
+    /* Disable counter buttons at bounds */
+    document.querySelectorAll('.counter').forEach(c => {
+      const key  = c.dataset.counter;
+      const min  = Number(c.dataset.min);
+      const max  = Number(c.dataset.max);
+      const v    = Number(state[key]);
+      c.querySelector('[data-act="dec"]').disabled = v <= min + 1e-9;
+      c.querySelector('[data-act="inc"]').disabled = v >= max - 1e-9;
+    });
+
+    /* Accent */
+    document.getElementById('accentHex').value = state.accent;
+    document.querySelectorAll('.swatch').forEach(sw => {
+      sw.classList.toggle('is-active', sw.dataset.color.toLowerCase() === state.accent.toLowerCase());
+    });
+  }
+
+  function buildAccentSwatches() {
+    const host = document.getElementById('accentSwatches');
+    ACCENT_SWATCHES.forEach(c => {
+      const el = document.createElement('button');
+      el.type = 'button';
+      el.className = 'swatch';
+      el.style.background = c;
+      el.dataset.color = c;
+      el.title = c;
+      el.addEventListener('click', () => {
+        state.accent = c;
+        markDirty(); applyState();
+      });
+      host.appendChild(el);
+    });
+  }
+
+  function bindControls() {
+    /* Segmented */
+    document.querySelectorAll('[data-control]').forEach(group => {
+      const key = group.dataset.control;
+      group.querySelectorAll('.segmented__btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          let v = btn.dataset.value;
+          if (!isNaN(v) && v !== '') v = Number(v);
+          state[key] = v;
+          markDirty(); applyState();
+        });
+      });
+    });
+
+    /* Counters */
+    document.querySelectorAll('.counter').forEach(c => {
+      const key  = c.dataset.counter;
+      const min  = Number(c.dataset.min);
+      const max  = Number(c.dataset.max);
+      const step = Number(c.dataset.step);
+      c.querySelectorAll('.counter__btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const delta = btn.dataset.act === 'inc' ? step : -step;
+          const next  = Math.min(max, Math.max(min, Number(state[key]) + delta));
+          /* Round to avoid float drift like 1.2000000001 */
+          state[key] = Math.round(next / step) * step;
+          markDirty(); applyState();
+        });
+      });
+    });
+
+    /* Accent hex input */
+    document.getElementById('accentHex').addEventListener('change', e => {
+      const v = e.target.value.trim();
+      if (/^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(v)) {
+        state.accent = v; markDirty(); applyState();
+      } else {
+        e.target.value = state.accent;
+      }
+    });
+
+    /* Preset */
+    document.getElementById('preset').addEventListener('change', e => {
+      state = { ...PRESETS[e.target.value] };
+      markDirty(); applyState();
+    });
+
+    /* Topbar buttons */
+    document.getElementById('themeToggle').addEventListener('click', () => {
+      state.mode = state.mode === 'light' ? 'dark' : 'light';
+      markDirty(); applyState();
+    });
+    const toggleDrawer = () => {
+      const app = document.getElementById('app');
+      app.dataset.drawer = app.dataset.drawer === 'open' ? 'closed' : 'open';
+    };
+    document.getElementById('drawerCollapse').addEventListener('click', toggleDrawer);
+    document.getElementById('drawerReopen').addEventListener('click', toggleDrawer);
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      if (!confirm('Reset all customizations to the default theme?')) return;
+      state = { ...DEFAULTS, colors: {} };
+      localStorage.removeItem(STORAGE_KEY);
+      /* Clear any previously-set inline overrides */
+      Object.values(PALETTE_GROUPS).flat().forEach(t => {
+        document.documentElement.style.removeProperty(t.name);
+      });
+      dirty = false;
+      applyState(); updateStatus();
+    });
+    document.getElementById('saveBtn').addEventListener('click', () => {
+      persist();
+      const btn = document.getElementById('saveBtn');
+      const orig = btn.textContent;
+      btn.textContent = 'Saved';
+      setTimeout(() => btn.textContent = orig, 1200);
+    });
+    document.getElementById('exportBtn').addEventListener('click', openExport);
+    document.getElementById('closeModal').addEventListener('click', closeExport);
+    document.getElementById('exportModal').addEventListener('click', e => {
+      if (e.target.id === 'exportModal') closeExport();
+    });
+
+    /* Modal tabs */
+    document.querySelectorAll('.modal__tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.modal__tab').forEach(t => t.classList.remove('is-active'));
+        tab.classList.add('is-active');
+        renderExport(tab.dataset.tab);
+      });
+    });
+
+    document.getElementById('copyExport').addEventListener('click', () => {
+      const text = document.getElementById('exportContent').textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = document.getElementById('copyExport');
+        const orig = btn.textContent; btn.textContent = 'Copied';
+        setTimeout(() => btn.textContent = orig, 1200);
+      });
+    });
+    document.getElementById('downloadExport').addEventListener('click', () => {
+      const tab = document.querySelector('.modal__tab.is-active').dataset.tab;
+      const filename = tab === 'md' ? 'design.md' : tab === 'css' ? 'tokens.css' : 'design-system.html';
+      const mime = tab === 'html' ? 'text/html' : tab === 'css' ? 'text/css' : 'text/markdown';
+      download(filename, document.getElementById('exportContent').textContent, mime);
+      persist(); /* explicit export counts as "save" */
+    });
+  }
+
+  function download(name, content, mime) {
+    const blob = new Blob([content], { type: mime + ';charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = name; a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  /* ============================================================
+     EXPORT — generate the three artifacts
+     ============================================================ */
+  function openExport() {
+    document.getElementById('exportModal').classList.add('is-open');
+    renderExport('md');
+  }
+  function closeExport() {
+    document.getElementById('exportModal').classList.remove('is-open');
+  }
+  function renderExport(kind) {
+    let content = '';
+    if (kind === 'md')   content = generateMarkdown();
+    if (kind === 'css')  content = generateCss();
+    if (kind === 'html') content = generateHtml();
+    document.getElementById('exportContent').textContent = content;
+  }
+
+  function resolvedTokens() {
+    const cs = getComputedStyle(document.documentElement);
+    const get = n => cs.getPropertyValue(n).trim();
+    return {
+      mode: state.mode,
+      accent: state.accent,
+      accentHover: get('--color-accent-hover'),
+      accentSoft: get('--color-accent-soft'),
+      font: FONT_STACKS[state.font],
+      fontSize: state.fontSize,
+      typeRatio: state.typeRatio,
+      spaceBase: state.spaceBase,
+      radius: RADIUS_PRESETS[state.radius],
+      shadow: SHADOW_PRESETS[state.shadow],
+      density: DENSITY_PRESETS[state.density],
+      border: state.border,
+    };
+  }
+
+  function generateMarkdown() {
+    const t = resolvedTokens();
+    return `# Design System
+
+> Generated by the interactive design system file. Feed this to AI agents as the canonical reference.
+
+## Theme summary
+- Mode: ${t.mode}
+- Accent: ${t.accent} (hover: ${t.accentHover}, soft: ${t.accentSoft})
+- Font: ${t.font}
+- Base font size: ${t.fontSize}px
+- Type scale ratio: ${t.typeRatio}
+- Spacing base: ${t.spaceBase}px
+- Radius style: ${state.radius} (md = ${t.radius.md})
+- Shadow style: ${state.shadow}
+- Density: ${state.density}
+- Border width: ${t.border}px
+
+## Rules for AI agents
+1. **Always reference tokens via CSS custom properties.** Never hardcode colors, sizes, or shadows.
+2. **Buttons** use \`--radius-md\` and \`--shadow-xs\`. Primary uses \`--color-accent\`; secondary uses \`--color-surface\` + \`--border\`.
+3. **Cards** use \`--radius-lg\`, \`--shadow-sm\`, \`--color-surface\`, padding \`var(--space-5)\`.
+4. **Modals** use \`--shadow-xl\` and \`--radius-lg\`.
+5. **Hairline borders only** — \`--border-width\` is ${t.border}px.
+6. **Focus states** use a 3px ring of \`--color-accent-soft\` plus a 1px \`--color-accent\` border.
+7. **Type hierarchy** comes from the geometric scale; do not introduce ad-hoc sizes.
+8. **Semantic colors**: success, warning, danger, info — use only for status, never decoration.
+
+## Tokens (drop-in CSS)
+\`\`\`css
+${generateCss()}
+\`\`\`
+
+## Component snippets
+
+### Button
+\`\`\`html
+<button class="btn btn--primary">Primary</button>
+<button class="btn">Secondary</button>
+<button class="btn btn--ghost">Ghost</button>
+\`\`\`
+
+_(more snippets generated as components are filled in)_
+`;
+  }
+
+  function generateCss() {
+    const t = resolvedTokens();
+    return `:root {
+  /* Color */
+  --color-bg: ${getComputedStyle(document.documentElement).getPropertyValue('--color-bg').trim()};
+  --color-surface: ${getComputedStyle(document.documentElement).getPropertyValue('--color-surface').trim()};
+  --color-border: ${getComputedStyle(document.documentElement).getPropertyValue('--color-border').trim()};
+  --color-text: ${getComputedStyle(document.documentElement).getPropertyValue('--color-text').trim()};
+  --color-text-muted: ${getComputedStyle(document.documentElement).getPropertyValue('--color-text-muted').trim()};
+  --color-accent: ${t.accent};
+  --color-accent-hover: ${t.accentHover};
+  --color-accent-soft: ${t.accentSoft};
+
+  /* Typography */
+  --font-sans: ${t.font};
+  --font-size-base: ${t.fontSize}px;
+  --type-ratio: ${t.typeRatio};
+
+  /* Spacing (base = ${t.spaceBase}px, geometric) */
+  --space-1: ${t.spaceBase * 1}px;
+  --space-2: ${t.spaceBase * 2}px;
+  --space-3: ${t.spaceBase * 3}px;
+  --space-4: ${t.spaceBase * 4}px;
+  --space-5: ${t.spaceBase * 6}px;
+  --space-6: ${t.spaceBase * 8}px;
+
+  /* Radius */
+  --radius-sm: ${t.radius.sm};
+  --radius-md: ${t.radius.md};
+  --radius-lg: ${t.radius.lg};
+  --radius-xl: ${t.radius.xl};
+
+  /* Shadow */
+  --shadow-xs: ${t.shadow.xs};
+  --shadow-sm: ${t.shadow.sm};
+  --shadow-md: ${t.shadow.md};
+  --shadow-lg: ${t.shadow.lg};
+  --shadow-xl: ${t.shadow.xl};
+
+  /* Misc */
+  --border-width: ${t.border}px;
+}`;
+  }
+
+  function generateHtml() {
+    /* Inline the user's current state as a <script> seed so the exported
+       file boots with their customizations applied. */
+    const seed = `<script>localStorage.setItem(${JSON.stringify(STORAGE_KEY)}, ${JSON.stringify(JSON.stringify(state))});<\/script>`;
+    const cloned = document.documentElement.outerHTML;
+    return '<!doctype html>\n' + cloned.replace('</head>', seed + '</head>');
+  }
+
+  /* ============================================================
+     PALETTE RENDERER — Color section + per-token color pickers
+     ============================================================ */
+  function flashCopied(el) {
+    el.classList.add('is-copied');
+    setTimeout(() => el.classList.remove('is-copied'), 1200);
+  }
+
+  function buildPalette() {
+    Object.entries(PALETTE_GROUPS).forEach(([groupKey, tokens]) => {
+      const host = document.querySelector(`[data-palette="${groupKey}"]`);
+      if (!host) return;
+      host.innerHTML = '';
+      tokens.forEach(t => {
+        const wrap = document.createElement('div');
+        wrap.className = 'token';
+        wrap.innerHTML = `
+          <div class="token__swatch" data-token-name="${t.name}">
+            <input type="color" class="token__picker" value="#000000" aria-label="Pick ${t.label}" />
+          </div>
+          <div class="token__hex" data-hex-of="${t.name}">#000000</div>
+          <div class="token__name">${t.name}</div>
+        `;
+        host.appendChild(wrap);
+
+        /* Hex click → copy */
+        wrap.querySelector('.token__hex').addEventListener('click', () => {
+          const hex = wrap.querySelector('.token__hex').textContent.trim();
+          navigator.clipboard.writeText(hex).then(() => flashCopied(wrap));
+        });
+        /* Color picker change → override that token */
+        wrap.querySelector('.token__picker').addEventListener('input', (e) => {
+          const val = e.target.value.toUpperCase();
+          state.colors = { ...state.colors, [t.name]: val };
+          /* If user edits accent through the palette, sync state.accent too
+             so the swatches/hex input in the drawer stay consistent. */
+          if (t.name === '--color-accent') state.accent = val;
+          markDirty(); applyState();
+        });
+      });
+    });
+  }
+
+  /* Refresh swatch fills, hex readouts, and picker values from resolved styles */
+  function refreshPalette() {
+    document.querySelectorAll('.token__swatch[data-token-name]').forEach(sw => {
+      const varName = sw.dataset.tokenName;
+      const hex = resolveColor(varName);
+      sw.style.background = `var(${varName})`;
+      const picker = sw.querySelector('.token__picker');
+      if (picker) picker.value = hex.startsWith('#') ? hex : '#000000';
+    });
+    document.querySelectorAll('[data-hex-of]').forEach(el => {
+      el.textContent = resolveColor(el.dataset.hexOf);
+    });
+  }
+
+  function bindCopyTargets() {
+    /* Icons — copy SVG markup */
+    document.querySelectorAll('.icon-cell').forEach(el => {
+      el.addEventListener('click', () => {
+        const svg = el.querySelector('svg').outerHTML;
+        navigator.clipboard.writeText(svg).then(() => flashCopied(el));
+      });
+    });
+
+    /* Accent native picker (in drawer) */
+    const native = document.getElementById('accentNative');
+    if (native) {
+      native.addEventListener('input', (e) => {
+        state.accent = e.target.value.toUpperCase();
+        markDirty(); applyState();
+      });
+    }
+  }
+
+  /* ============================================================
+     INIT
+     ============================================================ */
+  buildAccentSwatches();
+  buildPalette();
+  bindControls();
+  bindCopyTargets();
+  applyState();
+  updateStatus();
+  </script>
+</body>
+</html>
