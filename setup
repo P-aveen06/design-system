@@ -23,7 +23,7 @@ if [ "$SKILL_DIR" != "$EXPECTED_DIR" ]; then
   echo -e "${YELLOW}⚠${RESET}  Installed at: $SKILL_DIR"
   echo -e "   Claude Code looks for skills at: $EXPECTED_DIR"
   echo -e "   ${DIM}Reinstall with:${RESET}"
-  echo -e "   ${DIM}  rm -rf \"$SKILL_DIR\" && git clone --single-branch --depth 1 https://github.com/P-aveen06/design-system.git \"$EXPECTED_DIR\"${RESET}"
+  echo -e "   ${DIM}  rm -rf \"$SKILL_DIR\" && git clone --branch main --single-branch --depth 1 https://github.com/P-aveen06/design-system.git \"$EXPECTED_DIR\"${RESET}"
   echo ""
   exit 1
 fi

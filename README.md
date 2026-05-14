@@ -21,7 +21,7 @@ When Claude is wired up as a skill (below), it reads this file before generating
 This installs the design system as a Claude Code skill at `~/.claude/skills/design-system/`.
 
 ```sh
-git clone --single-branch --depth 1 https://github.com/P-aveen06/design-system.git ~/.claude/skills/design-system && cd ~/.claude/skills/design-system && ./setup
+git clone --branch main --single-branch --depth 1 https://github.com/P-aveen06/design-system.git ~/.claude/skills/design-system && cd ~/.claude/skills/design-system && ./setup
 ```
 
 After setup:
