@@ -48,6 +48,37 @@ If for any reason you cannot read the file, fall back to these conventions:
 
 Always prefer reading the actual file — these are fallbacks only.
 
+## Aligning an existing app
+
+When the user asks to align, audit, or refactor an existing codebase to this design system — for example:
+
+- "align this app to my design system"
+- "audit this codebase against the design system"
+- "refactor existing UI to use my tokens"
+- "make this project match my design system"
+
+Follow this workflow. **Default to report-only — do not edit code until the user approves the mapping.**
+
+1. **Read `design-system.html` first** to load current token values and component class names.
+2. **Detect the stack.** Read `package.json`, framework configs, and a sample of UI files to identify: framework (React/Vue/Svelte/plain HTML), styling approach (CSS/SCSS/Tailwind/CSS-in-JS/CSS modules), and where global styles live.
+3. **Inventory hardcoded values.** Grep the app's UI source for:
+   - Colors: hex (`#[0-9a-f]{3,8}`), `rgb(`, `rgba(`, `hsl(`, `hsla(`
+   - Spacing/sizing: numeric literals with `px`, `rem`, `em` in `margin`, `padding`, `gap`, `width`, `height`, `top/right/bottom/left`
+   - Radii: `border-radius:` with literal values
+   - Shadows: `box-shadow:` with literal values
+   - Type: `font-size:`, `font-weight:`, `line-height:` with literal values
+   - Component-shaped classes (`.button`, `.btn`, `.card`, `.modal`, `.input`, etc.) that overlap with names defined in `design-system.html`
+4. **Produce a mapping report** as Markdown. For each finding: file:line, current value, proposed token (e.g. `#3B5BDB` → `var(--color-accent)`), and a confidence note. Group unmapped values separately and ask the user how to handle them (add token? leave as-is? closest match?).
+5. **Wait for approval.** Do not edit until the user confirms the mapping or asks you to proceed.
+6. **Drop in tokens.** Once approved, copy the exported `tokens.css` (or inline the `:root { ... }` block from `design-system.html`) into the app and wire it into the root stylesheet so `var(--color-*)` etc. resolve.
+7. **Refactor in passes — one concern per commit:** colors → spacing → radii → shadows → typography → components. Commit between passes so each pass is reviewable and revertable.
+8. **Visual verification.** After each pass, screenshot key pages (use `/design-review` or `/browse` if available) and compare before/after with the user.
+
+Hard rules in alignment mode:
+- Never invent tokens to make a value fit. Surface the mismatch and ask.
+- Never bulk-replace across the repo without showing the diff first.
+- Skip vendored code, `node_modules`, build output, and any directory the user excludes.
+
 ## Boundaries
 
 - Do not modify `design-system.html` unless the user explicitly asks. It is the user's customized artifact.

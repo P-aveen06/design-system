@@ -60,6 +60,20 @@ The **Export** button produces three artifacts your project (or any AI agent) ca
 
 Each artifact has Copy and Download in the modal.
 
+## Aligning an existing app
+
+The skill works in two modes:
+
+- **Generate mode (default)** — ask Claude to build any UI and it'll use your tokens and components.
+- **Alignment mode** — ask Claude to align/audit/refactor an existing codebase to your design system. It will:
+  1. Detect your stack (framework, styling approach).
+  2. Inventory hardcoded colors, spacing, radii, shadows, typography, and overlapping component classes.
+  3. Produce a mapping report (current value → proposed token) for your review.
+  4. Wait for your approval before editing anything.
+  5. Drop in `tokens.css`, then refactor in reviewable passes — one commit per concern (colors → spacing → radii → shadows → type → components).
+
+Trigger it with phrases like "align this app to my design system", "audit this codebase against the design system", or "refactor existing UI to use my tokens".
+
 ## How Claude uses this
 
 After setup, Claude Code discovers the skill at `~/.claude/skills/design-system/SKILL.md`. When you ask Claude to build UI, it reads your `design-system.html` to learn the current tokens and rules before writing any code. Every component it generates uses your custom properties — never hardcoded values.
